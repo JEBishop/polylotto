@@ -3,33 +3,38 @@
 pragma solidity ^0.8.0;
 
 contract Lottery{
-    address public custodian = 0x60bcb0Cd4E76a1E385A0bE028F99017b19266096;
     address[] public players;
     address[] public winners;
+    uint public pool = 0;
 
-    function lottery() public {
-        //custodian = msg.sender;
+    uint public constant CAP_AMOUNT = 100;
+    uint public constant PRICE = 1;
+
+    function getPool() public view returns (uint) {
+        return pool;
     }
 
     function enter() public payable{
         require(address(this).balance >= msg.value, "Address: insufficient balance");
-        require(msg.value > 1 ether);
-        players.push(msg.sender);
+        require(msg.value >= 1 ether, "Must enter with at least 1 MATIC");
+        pool += msg.value;
+        //for(uint i = 0; i < msg.value; i++) {
+        //    players.push(msg.sender);
+        //}
+        if(pool >= CAP_AMOUNT) {
+            //pickWinner();
+        }
     }
 
     function random() private view returns(uint){
         return  uint (keccak256(abi.encode(block.timestamp, players)));
     }
 
-    function pickWinner() public restricted {
+    function pickWinner() public {
         uint winnerIdx = random() % players.length;
         winners.push(players[winnerIdx]);
-        payable (players[winnerIdx]).transfer(100);
+        payable (players[winnerIdx]).transfer(CAP_AMOUNT);
         players = new address[](0);
-    }
-
-    modifier restricted(){
-        require(msg.sender == custodian);
-        _;
+        pool = 0;
     }
 }

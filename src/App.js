@@ -4,15 +4,14 @@ import contract from './contracts/lotto.json';
 import { ethers } from 'ethers';
 //import web3 from 'web3';
 
-const contractAddress = "0xeF14d268d90b6C7A9D6627517f45aB2313db6a03";
+const contractAddress = "0xA0e8A8603e10c91f8C666e1d7De3F4230CD555d8";
 const abi = contract.abi;
-
-const chainId = 80001 // Polygon Testnet
+const chainId = 80001
 
 function App() {
 
   const [currentAccount, setCurrentAccount] = useState(null);
-
+  
   async function confirmNetwork() {
     if (window.ethereum.networkVersion !== chainId) {
         try {
@@ -38,6 +37,7 @@ function App() {
         }
       }
   }
+  
 
   const checkWalletIsConnected = async () => {
     const { ethereum } = window;
@@ -121,16 +121,7 @@ function App() {
   useEffect(() => {
     checkWalletIsConnected();
   }, []);
-  
-  function ShowTime() {
-    var timeLeft;
-    var now = new Date();
-    var hrs = 24-now.getHours();
-    var mins = 60-now.getMinutes();
-    var secs = 60-now.getSeconds();
-        timeLeft = "" +hrs+' hours '+mins+' minutes '+secs+' seconds';
-    return timeLeft;
-  }
+
   return (
     <div className='main-app'>
       <h1>polylotto</h1>
